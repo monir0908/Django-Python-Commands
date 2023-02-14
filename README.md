@@ -1,2 +1,2 @@
 # Django-Python-Commands
-This repo is intended to assemble commands and steps of several deployments, pushes, procedures etc.
+This repo is intended to assemble neccessary commands and steps for several kinds of deployments, pushes, procedures etc.
