@@ -63,7 +63,7 @@ My ec2 instance user: `ubuntu`<br>
 ### Deactivate virtualenv<hr>
 `deactivate`<br>
 
-### Creating systemd Socket File<hr>
+### Creating systemd 'Socket File'<hr>
 `sudo nano /etc/systemd/system/gunicorn.socket`<br>
 
 ### Paste the following piece of configuration<hr>
@@ -79,7 +79,7 @@ ListenStream=/run/gunicorn.sock
 WantedBy=sockets.target
 ```
 
-### Creating systemd Service File<hr>
+### Creating systemd 'Service File'<hr>
 `sudo nano /etc/systemd/system/gunicorn.service`<br>
 
 ### Paste the following piece of configuration for service creation<hr>
