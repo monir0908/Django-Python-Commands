@@ -1,7 +1,7 @@
 # Postgres Database Common Commands
 
 ### To login<hr>
-`psql -U postgres -h localhost -w`<br>
+`psql -U postgres -h localhost -W`<br>
 `psql -U postgres -h localhost`<br>
 `psql -U postgres`<br>
 
