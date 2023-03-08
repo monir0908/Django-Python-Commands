@@ -91,54 +91,55 @@ source env-notebook/bin/activate
 
 
 ### 11. Install necessary packages through pip<hr>
-##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
 ```
-env-notebook: pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### 12. Migrate database (db.sqlite3)<hr>
-##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
 ```
-env-notebook: python manage.py migrate
+python manage.py migrate
 ```
 
 ### 13. Allow firewall: port 8000<hr>
-##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
 ```
-env-notebook: sudo ufw allow 8000
+sudo ufw allow 8000
 ```
 
 ### 14. Run the server and check in the browser if site starts working<hr>
-##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
 ```
-env-notebook: python manage.py runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8000
 ```
 
 ### 15. Binding gunicorn<hr>
-##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
 if requirements.txt has `gunicorn` then<br>
 ```
-env-notebook: gunicorn --bind 0.0.0.0:8000 backend.wsgi
+gunicorn --bind 0.0.0.0:8000 backend.wsgi
 ```
 
 if requirements.txt does not have `gunicorn`, then we need to install `gunicorn`(with any version preference)<br>
 ```
-env-notebook: pip install gunicorn 
+pip install gunicorn 
 ```
 
 ### 16. Collect stactic files<hr>
-##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
 ```
-env-notebook: python manage.py collectstatic
+python manage.py collectstatic
 ```
 
 ### 17. Deactivate virtualenv<hr>
-##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
 ```
 deactivate
 ```
 
 ### 18. Creating systemd 'Socket File'<hr>
+##### [ubuntu@ip-172-31-37-35:~/myprojectdir$]
 ```
 sudo nano /etc/systemd/system/gunicorn.socket
 ```
