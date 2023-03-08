@@ -70,46 +70,52 @@ cd ~/myprojectdir
 
 ### 8. Create a virtualenv and activate it<hr>
 #### To create virtual enviornment with a specific version of python<br>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
 virtualenv --python=/usr/bin/python3.7 env-notebook
 ```
 
-#### Or<br>
-
-#### To create virtual enviornment with default version of python of the machine<br>
-`virtualenv env-notebook`<br>
+#### Or to create virtual enviornment with default version of python of the machine<br>
+```
+virtualenv env-notebook
+```
 
 #### To activate<br>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
 source env-notebook/bin/activate
 ```
-
 
 ### 9. Meanwhile --> Upload all the necessary folders within 'myprojectdir' in aws (/home/ubuntu/myprojectdir/)
 ### 10. Meanwhile --> Edit inbound rules in aws security section (e.g. allow 'TCP', 'HTTP', 'HTTPS' etc.)
 
 
 ### 11. Install necessary packages through pip<hr>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
 env-notebook: pip install -r requirements.txt
 ```
 
 ### 12. Migrate database (db.sqlite3)<hr>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
 env-notebook: python manage.py migrate
 ```
 
 ### 13. Allow firewall: port 8000<hr>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
 env-notebook: sudo ufw allow 8000
 ```
 
 ### 14. Run the server and check in the browser if site starts working<hr>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
 env-notebook: python manage.py runserver 0.0.0.0:8000
 ```
 
 ### 15. Binding gunicorn<hr>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 if requirements.txt has `gunicorn` then<br>
 ```
 env-notebook: gunicorn --bind 0.0.0.0:8000 backend.wsgi
@@ -121,11 +127,13 @@ env-notebook: pip install gunicorn
 ```
 
 ### 16. Collect stactic files<hr>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
 env-notebook: python manage.py collectstatic
 ```
 
 ### 17. Deactivate virtualenv<hr>
+##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
 deactivate
 ```
