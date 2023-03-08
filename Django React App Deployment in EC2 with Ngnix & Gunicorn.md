@@ -96,6 +96,10 @@ source env-notebook/bin/activate
 pip install -r requirements.txt
 ```
 
+### 📢 To avoid psycopg2 error<hr>
+`sudo apt-get install python3.7-dev`<br>
+
+
 ### 12. Migrate database (db.sqlite3)<hr>
 ##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
 ```
@@ -192,9 +196,17 @@ sudo systemctl start gunicorn.socket
 sudo systemctl enable gunicorn.socket
 ```
 
-### 22. Checking gunicorn status<hr>
+### 22. Checking gunicorn.socket status<hr>
 ```
 sudo systemctl status gunicorn.socket
+```
+
+### 📢 Restart gunicorn (when needed)<hr>
+```
+sudo systemctl daemon-reload
+```
+```
+sudo systemctl restart gunicorn
 ```
 
 
@@ -209,7 +221,7 @@ sudo journalctl -u gunicorn.socket
 ```
 
 
-### 23. Testing socket activation<hr>
+### 23. Testing gunicorn status<hr>
 ```
 sudo systemctl status gunicorn
 ```
@@ -288,17 +300,7 @@ sudo chown :www-data ~/myprojectdir/backend
 sudo sudo systemctl restart nginx
 ```
 
-### Restart gunicorn (when needed)<hr>
-```
-sudo systemctl daemon-reload
-```
-```
-sudo systemctl restart gunicorn
-```
-
 ### To delete ngnix sites-avialable, sites-enable rule<hr>
 `sudo rm -r /etc/nginx/sites-available/backend`<br>
 `sudo rm -r /etc/nginx/sites-enabled/backend`<br>
 
-### To avoid psycopg2 error<hr>
-`sudo apt-get install python3.7-dev`<br>
