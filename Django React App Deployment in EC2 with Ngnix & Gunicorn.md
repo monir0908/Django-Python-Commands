@@ -2,14 +2,17 @@
 
 ### What I start with<hr>
 My project directory: `myprojectdir`<br>
-My project root: `notionClone`<br>
-My virtualenv: `env-nc`<br>
-My FQDN: `test-notion-clone-tobi.inteam.jp`<br>
+Project main app: `backend`<br> 
+My virtualenv: `env-notebook`<br>
+My FQDN: `notebook-beta.inteam.jp`<br>
 My ec2 instance user: `ubuntu`<br>
 
+⚠️ requirements.txt, manage.py files will reside in the same level with my project root directory (i.e. backend)
+
+![image](https://user-images.githubusercontent.com/47719314/223613009-0207dc11-fa47-493e-b38d-387a42e298df.png)
 
 ### Login to ec2 instance<hr>
-`ssh -i C:\Users\monir\Downloads\YOUR-PEM-FILE.pem ubuntu@ec2-15-152-115-101.ap-northeast-3.compute.amazonaws.com`<br>
+`ssh -i C:\Users\monir\Downloads\YOUR-PEM-FILE.pem ubuntu@ec2-15-xxx-xxx-xxx.ap-xxx-3.compute.amazonaws.com`<br>
 
 
 ### Install essential libraries<hr>
@@ -17,7 +20,7 @@ My ec2 instance user: `ubuntu`<br>
 `sudo apt install python3-pip python3-dev libpq-dev nginx curl`<br>
 
 
-### Install different version of python according to our needs<hr>
+### Install different version of python; I needed 3.7 python version for this specific project<hr>
 `sudo add-apt-repository ppa:deadsnakes/ppa`<br>
 `sudo apt-get update`<br>
 `sudo apt install python3.7-distutils`<br>
@@ -35,30 +38,43 @@ My ec2 instance user: `ubuntu`<br>
 `cd ~/myprojectdir`<br>
 
 ### Create a virtualenv amd activate it<hr>
-`virtualenv env-nc`<br>
-`source env-nc/bin/activate`<br>
+To create virtual enviornment with a specific version of python<br>
+`virtualenv --python=/usr/bin/python3.7 env-notebook`<br>
+
+Or<br>
+
+To create virtual enviornment with default version of python of the machine<br>
+`virtualenv env-notebook`<br>
+
+To activate<br>
+`source env-notebook/bin/activate`<br>
 
 
 ### Meanwhile --> Upload all the necessary folders within 'myprojectdir' in aws (/home/ubuntu/myprojectdir/)
 ### Meanwhile --> Edit inbound rules in aws security section (e.g. allow 'TCP', 'HTTP', 'HTTPS' etc.)
 
+
 ### Install necessary packages through pip<hr>
-`env-nc: pip install -r requirements.txt`<br>
+`env-notebook: pip install -r requirements.txt`<br>
 
 ### Migrate database (db.sqlite3)<hr>
-`env-nc: python manage.py migrate`<br>
+`env-notebook: python manage.py migrate`<br>
 
 ### Allow firewall: port 8000<hr>
-`env-nc: sudo ufw allow 8000`<br>
+`env-notebook: sudo ufw allow 8000`<br>
 
 ### Run the server and check in the browser if site starts working<hr>
-`env-nc: python manage.py runserver 0.0.0.0:8000`<br>
+`env-notebook: python manage.py runserver 0.0.0.0:8000`<br>
 
 ### Binding gunicorn<hr>
-`env-nc: gunicorn --bind 0.0.0.0:8000 notionClone.wsgi`<br>
+if requirements.txt has `gunicorn` then
+`env-notebook: gunicorn --bind 0.0.0.0:8000 backend.wsgi`<br>
+
+if requirements.txt does not have `gunicorn`, then we need to install `gunicorn`
+`env-notebook: pip install gunicorn (with any version preference)`<br>
 
 ### Collect stactic files<hr>
-`env-nc: python manage.py collectstatic`<br>
+`env-notebook: python manage.py collectstatic`<br>
 
 ### Deactivate virtualenv<hr>
 `deactivate`<br>
@@ -94,11 +110,11 @@ After=network.target
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/myprojectdir
-ExecStart=/home/ubuntu/myprojectdir/env-nc/bin/gunicorn \
+ExecStart=/home/ubuntu/myprojectdir/env-notebook/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
-          notionClone.wsgi:application
+          backend.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
@@ -126,7 +142,7 @@ It’s an indication that the Gunicorn socket was not able to be created correct
 
 
 ### Configure nginx to proxy pass to gunicorn<hr>
-`sudo nano /etc/nginx/sites-available/notionClone`<br>
+`sudo nano /etc/nginx/sites-available/backend`<br>
 
 
 ### Paste the following piece of configuration for ngnix<hr>
@@ -149,7 +165,7 @@ server {
 ```
 
 ### Now, we can enable the file by linking it to the sites-enabled directory:<hr>
-`sudo ln -s /etc/nginx/sites-available/notionClone /etc/nginx/sites-enabled`<br>
+`sudo ln -s /etc/nginx/sites-available/backend /etc/nginx/sites-enabled`<br>
 
 
 ### Testing ngnix<hr>
@@ -169,7 +185,7 @@ Since we no longer need access to the development server, we can remove the rule
 
 `chmod 664 db.sqlite3`<br>
 `sudo chown :www-data db.sqlite3`<br>
-`sudo chown :www-data ~/myprojectdir/notionClone`<br>
+`sudo chown :www-data ~/myprojectdir/backend`<br>
 `sudo sudo systemctl restart nginx`<br>
 
 -------------done------------
@@ -178,8 +194,8 @@ Since we no longer need access to the development server, we can remove the rule
 ### =======================OTHER USEFUL COMMANDS=================
 
 ### To delete ngnix sites-avialable, sites-enable rule<hr>
-`sudo rm -r /etc/nginx/sites-available/notionClone`<br>
-`sudo rm -r /etc/nginx/sites-enabled/notionClone`<br>
+`sudo rm -r /etc/nginx/sites-available/backend`<br>
+`sudo rm -r /etc/nginx/sites-enabled/backend`<br>
 
 
 ### Restart gunicorn (if needed)<hr>
