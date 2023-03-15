@@ -304,3 +304,13 @@ sudo sudo systemctl restart nginx
 `sudo rm -r /etc/nginx/sites-available/backend`<br>
 `sudo rm -r /etc/nginx/sites-enabled/backend`<br>
 
+
+### 📢 JWT related error !<hr>
+<head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <meta name="robots" content="NONE,NOARCHIVE"> 
+        <title>`ImportError` at /collection/list</title>
+
+<pre class="exception_value">cannot import name &#x27;`InvalidKeyError`&#x27; from &#x27;jwt.exceptions&#x27; 
+(/home/ubuntu/myprojectdir/env-notebook/lib/python3.7/site-packages/`jwt/exceptions.py`)</pre>
+
+#### Solution:
+Django is confusing between modules 'jwt' and PyJWT. To avoid this confusion uninstall both modules. Now, install jwt first and then install PyJWT.
