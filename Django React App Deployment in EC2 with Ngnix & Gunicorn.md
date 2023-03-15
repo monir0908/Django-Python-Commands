@@ -1,15 +1,16 @@
 # Django React App Deployment in EC2 with Ngnix and Gunicorn
 
 ### 1. What I start with<hr>
-My project directory: `myprojectdir`<br>
-Project main app: `backend`<br> 
+Project directory: `myprojectdir` [can hold multiple projects]<br>
+Project root: `notebook_django_backend`<br>
+Project main app: `backend` [inside 'notebook_django_backend']<br> 
 My virtualenv: `env-notebook`<br>
 My FQDN: `notebook-beta.inteam.jp`<br>
 My ec2 instance user: `ubuntu`<br>
 
-![image](https://user-images.githubusercontent.com/47719314/223614827-ca6b0b21-2ac4-4e16-a857-a125a3271f9b.png)
+![image](https://user-images.githubusercontent.com/47719314/225372091-a1a86c18-f212-478c-8fb3-c1f7c89716aa.png)
 
-⚠️ requirements.txt, manage.py files, main app will reside inside the project root directory (i.e. myprojectdir)
+⚠️ requirements.txt, manage.py files, main app will reside inside `notebook_django_backend` folder.
 
 ### 2. Login to ec2 instance<hr>
 #### With CMD / Shell<br>
