@@ -238,7 +238,7 @@ sudo nano /etc/nginx/sites-available/backend
 ```
 server {
     listen 80;
-    server_name test-notion-clone-tobi.inteam.jp;
+    server_name notebook-beta.inteam.jp;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
@@ -306,6 +306,11 @@ sudo sudo systemctl restart nginx
 
 
 ### 📢 JWT related error !<hr>
+
+#### Error:
+when i hit this without token: http://notebook-beta.inteam.jp/collection/list
+it gives me a list perfectly.
+when I hit anything URL with token, I am getting the following error
 <head> <meta http-equiv="content-type" content="text/html; charset=utf-8"> <meta name="robots" content="NONE,NOARCHIVE"> 
         <title>`ImportError` at /collection/list</title>
 
