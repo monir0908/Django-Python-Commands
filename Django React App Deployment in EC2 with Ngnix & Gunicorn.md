@@ -10,7 +10,7 @@ My ec2 instance user: `ubuntu`<br>
 
 ![image](https://user-images.githubusercontent.com/47719314/225372091-a1a86c18-f212-478c-8fb3-c1f7c89716aa.png)
 
-⚠️ requirements.txt, manage.py files, main app will reside inside `notebook_django_backend` folder.
+👉 requirements.txt, manage.py files, main app will reside inside `notebook_django_backend` folder.
 
 ### 2. Login to ec2 instance<hr>
 #### With CMD / Shell<br>
@@ -92,7 +92,7 @@ source env-notebook/bin/activate
 
 
 ### 11. Install necessary packages through pip<hr>
-##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir/notebook_django_backend$]
 ```
 pip install -r requirements.txt
 ```
@@ -101,26 +101,26 @@ pip install -r requirements.txt
 `sudo apt-get install python3.7-dev`<br>
 
 
-### 12. Migrate database (db.sqlite3)<hr>
-##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
+### 12. Migrate database<hr>
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir/notebook_django_backend$]
 ```
 python manage.py migrate
 ```
 
 ### 13. Allow firewall: port 8000<hr>
-##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir/notebook_django_backend$]
 ```
 sudo ufw allow 8000
 ```
 
 ### 14. Run the server and check in the browser if site starts working<hr>
-##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir/notebook_django_backend$]
 ```
 python manage.py runserver 0.0.0.0:8000
 ```
 
 ### 15. Binding gunicorn<hr>
-##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir/notebook_django_backend$]
 if requirements.txt has `gunicorn` then<br>
 ```
 gunicorn --bind 0.0.0.0:8000 backend.wsgi
@@ -132,13 +132,13 @@ pip install gunicorn
 ```
 
 ### 16. Collect stactic files<hr>
-##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir/notebook_django_backend$]
 ```
 python manage.py collectstatic
 ```
 
 ### 17. Deactivate virtualenv<hr>
-##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir$]
+##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir/notebook_django_backend$]
 ```
 deactivate
 ```
@@ -232,19 +232,24 @@ sudo systemctl status gunicorn
 ```
 sudo nano /etc/nginx/sites-available/backend
 ```
-
+👉 NOTE: I named it `backend`; it could be any name.
 
 #### Paste the following piece of configuration for ngnix
-
 ```
 server {
     listen 80;
-    server_name notebook-beta.inteam.jp;
+    server_name notebook-beta-backend.inteam.jp;
 
     location = /favicon.ico { access_log off; log_not_found off; }
+
     location /static/ {
-        root /home/ubuntu/myprojectdir;
+        alias /home/ubuntu/myprojectdir/notebook_django_backend/staticfiles/;
     }
+
+    location /media/ {
+        alias /home/ubuntu/myprojectdir/notebook_django_backend/media/;
+    }
+
 
     location / {
         include proxy_params;
@@ -270,8 +275,12 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
+### 28. To permit static, media files <hr>
+```
+sudo usermod -a -G ubuntu www-data
+```
 
-### 28. Finally, we need to open up our firewall to normal traffic on port 80. 
+### 29. Finally, we need to open up our firewall to normal traffic on port 80. 
 Since we no longer need access to the development server, we can remove the rule to open port 8000 as well:<hr>
 ```
 sudo ufw delete allow 8000
@@ -286,7 +295,7 @@ sudo ufw allow 'Nginx Full'
 
 ### =======================OTHER USEFUL COMMANDS=================
 
-### To allow db.sqlite3<hr>
+### 👀 To allow db.sqlite3<hr>
 
 ```
 chmod 664 db.sqlite3
@@ -301,12 +310,12 @@ sudo chown :www-data ~/myprojectdir/backend
 sudo sudo systemctl restart nginx
 ```
 
-### To delete ngnix sites-avialable, sites-enable rule<hr>
+### 👀 To delete ngnix sites-avialable, sites-enable rule<hr>
 `sudo rm -r /etc/nginx/sites-available/backend`<br>
 `sudo rm -r /etc/nginx/sites-enabled/backend`<br>
 
 
-### 📢 JWT related error !<hr>
+### 🔥 JWT related error !<hr>
 
 #### Error:
 when i hit this without token: http://notebook-beta.inteam.jp/collection/list
