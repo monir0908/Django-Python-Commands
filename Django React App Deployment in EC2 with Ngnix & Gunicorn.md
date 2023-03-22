@@ -1,4 +1,4 @@
-# Django React App Deployment in EC2 with Ngnix and Gunicorn
+# Django App Deployment in EC2 with Ngnix and Gunicorn
 
 ### 1. What I start with<hr>
 Project directory: `myprojectdir` [can hold multiple projects]<br>
