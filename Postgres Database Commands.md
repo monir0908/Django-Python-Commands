@@ -87,7 +87,13 @@ If the dump file is corrupted or incomplete. <br>
 #### Solution: 
 Check the size of the dump file and make sure it's not zero bytes. You can do this by right-clicking on the file in Windows Explorer and selecting "Properties."<br>
 
-
+#### Error 03: pg_restore: error: input file appears to be a text format dump. Please use psql.<br>
+#### Solution: 
+1. let's go to the `directory/folder` (e.g. desktop) where I want to restore the file from<br>
+2. Then open the `command prompt`/`shell` inside the desktop and run the following command <br><br>
+```
+psql -d existing_db_name -U postgres -f db_to_restore.sql
+```
 
 
 
