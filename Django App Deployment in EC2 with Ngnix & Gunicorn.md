@@ -81,6 +81,14 @@ virtualenv --python=/usr/bin/python3.7 env-notebook
 virtualenv env-notebook
 ```
 
+#### Optional: For windows, if virtualenvwrapper is used, we can create env with specific python version <br>
+```
+pip install virtualenvwrapper-win
+mkvirtualenv --python=python3.8 myenv
+```
+
+
+
 #### To activate<br>
 ##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
