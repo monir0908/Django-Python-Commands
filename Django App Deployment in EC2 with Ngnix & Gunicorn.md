@@ -20,7 +20,19 @@ Main App:`backend` [inside 'Project Folder' i.e. 'notebook_django_backend']<br>
 🙋 Preparation<br>
 - It is better, if our app comes with `gunicorn` installed already and is also included in `requrements.txt` file. If not, we can easily install it later but this can be irritating while pulling the project from `git repo` next time as the `requirement.txt` file will be overriden and the `gunicorn` library will be missing.<br>
 - `.env`file with DB credentials, secret key etc.
-- The `RDS` is setup and db is already migrated through `psql`<br> 
+- The `RDS` is setup and db is already migrated through `psql`<br>
+- `STATIC`paths are setup in `settings.py` file such as:<br>
+```
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+```
 
 ### 2. Login to ec2 instance<hr>
 🙋 Login can be done either in CMD or MobaXterm<br><br>
