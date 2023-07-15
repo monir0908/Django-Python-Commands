@@ -1,8 +1,8 @@
 # Django App Deployment in EC2 with Ngnix and Gunicorn
 
 ### 1. What I start with<hr>
-Project directory: `myprojectdir` [can hold multiple projects]<br>
-Project root: `notebook_django_backend`<br>
+Project root directory: `myprojectdir` [can hold multiple projects]<br>
+Project root folder: `notebook_django_backend`<br>
 Project main app: `backend` [inside 'notebook_django_backend']<br> 
 My virtualenv: `env-notebook`<br>
 My FQDN: `notebook-beta.inteam.jp`<br>
@@ -186,12 +186,12 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/myprojectdir
+WorkingDirectory=/home/ubuntu/myprojectdir/{root folder name, e.g. notebook_django_backend}
 ExecStart=/home/ubuntu/myprojectdir/env-notebook/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
-          backend.wsgi:application
+          {main app name e.g. 'backend' which has wsgi file}.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
