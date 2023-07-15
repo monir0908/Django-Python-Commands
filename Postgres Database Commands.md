@@ -94,6 +94,8 @@ Check the size of the dump file and make sure it's not zero bytes. You can do th
 ```
 psql -d existing_db_name -U postgres -f db_to_restore.sql
 ```
-
-
+For AWS RDS
+```
+psql -h analytics-beta-db-instance.xxxxxxxxxx.ap-northeast-1.rds.amazonaws.com -U postgres -d analyticsbetaDB < dump0622.sql
+```
 
