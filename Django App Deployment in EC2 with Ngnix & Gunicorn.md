@@ -1,28 +1,42 @@
 # Django App Deployment in EC2 with Ngnix and Gunicorn
 
 ### 1. What I start with<hr>
-Project root directory: `myprojectdir` [can hold multiple projects]<br>
-Project root folder: `notebook_django_backend`<br>
-Project main app: `backend` [inside 'notebook_django_backend']<br> 
-My virtualenv: `env-notebook`<br>
-My FQDN: `notebook-beta.inteam.jp`<br>
-My ec2 instance user: `ubuntu`<br>
+👉 There are 3 folders that we need to remember carefully.<br>
+- Root Folder<br>
+- Project Folder<br>
+- Main App<br>
+
+Root Folder: `myprojectdir` [can hold multiple projects] <br>
+Project Folder: `notebook_django_backend`<br>
+Main App:`backend` [inside 'Project Folder' i.e. 'notebook_django_backend']<br> 
+
+👉 Other<br>
+- My virtualenv:   `env-notebook`<br>
+- My FQDN: `notebook-beta.inteam.jp`<br>
+- My ec2 instance user: `ubuntu`<br>
 
 ![image](https://user-images.githubusercontent.com/47719314/225372091-a1a86c18-f212-478c-8fb3-c1f7c89716aa.png)
 
-👉 requirements.txt, manage.py files, main app will reside inside `notebook_django_backend` folder.
+🙋 Preparation<br>
+- It is better, if our app comes with `gunicorn` installed already and is also included in `requrements.txt` file. If not, we can easily install it later but this can be irritating while pulling the project from `git repo` next time as the `requirement.txt` file will be overriden and the `gunicorn` library will be missing.<br>
+- `.env`file with DB credentials, secret key etc.
+- The `RDS` is setup and db is already migrated through `psql`<br> 
 
 ### 2. Login to ec2 instance<hr>
-#### With CMD / Shell<br>
+🙋 Login can be done either in CMD or MobaXterm<br><br>
+
+💊 Option 01: login through CMD / Shell<br>
 ```
 ssh -i C:\Users\monir\Downloads\YOUR-PEM-FILE.pem ubuntu@ec2-15-xxx-xxx-xxx.ap-xxx-3.compute.amazonaws.com
 ```
 
-#### With Mobaxterm:<br>
-Ctrl+Shift+N (will open up SSH session dialogue)<br>
-Enter Remote host [ec2-xxx-xxx-xxx-118.ap-xxxx-1.compute.amazonaws.com] <br>
-Click on Advance SSH Settings<br>
-Check Use private key and upload .pem file
+💊 Option 02: login through MobaXterm:<br>
+
+
+- Ctrl+Shift+N (will open up SSH session dialogue)<br>
+- Enter Remote host [ec2-xxx-xxx-xxx-118.ap-xxxx-1.compute.amazonaws.com] <br>
+- Click on Advance SSH Settings<br>
+- Check Use private key and upload .pem file
 
 ![image](https://user-images.githubusercontent.com/47719314/223616489-88ab1fcb-8874-48d4-918c-86bca7965c65.png)
 
@@ -42,10 +56,10 @@ sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get update
 ```
 ```
-sudo apt install python3.7-distutils
+sudo apt install {python3.7}-distutils
 ```
 ```
-sudo apt-get install python3.7
+sudo apt-get install {python3.7}
 ```
 
 ### 5. To check how many python versions the machine has<hr>
@@ -73,12 +87,12 @@ cd ~/myprojectdir
 #### To create virtual enviornment with a specific version of python<br>
 ##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
-virtualenv --python=/usr/bin/python3.7 env-notebook
+virtualenv --python=/usr/bin/{python3.7} {env-name}
 ```
 
 #### Or to create virtual enviornment with default version of python of the machine<br>
 ```
-virtualenv env-notebook
+virtualenv {env-name}
 ```
 
 #### Optional: For windows, if virtualenvwrapper is used, we can create env with specific python version <br>
@@ -92,7 +106,7 @@ mkvirtualenv --python=python3.8 myenv
 #### To activate<br>
 ##### [ubuntu@ip-172-xx-xx-xx:~/myprojectdir$]
 ```
-source env-notebook/bin/activate
+source {env-name}/bin/activate
 ```
 
 ### 9. Meanwhile --> Upload all the necessary folders within 'myprojectdir' in aws (/home/ubuntu/myprojectdir/)
@@ -131,12 +145,16 @@ python manage.py runserver 0.0.0.0:8000
 ##### [(env-notebook) ubuntu@ip-172-31-37-35:~/myprojectdir/notebook_django_backend$]
 if requirements.txt has `gunicorn` then<br>
 ```
-gunicorn --bind 0.0.0.0:8000 backend.wsgi
+gunicorn --bind 0.0.0.0:8000 {main app name}.wsgi
 ```
 
 if requirements.txt does not have `gunicorn`, then we need to install `gunicorn`(with any version preference)<br>
 ```
 pip install gunicorn 
+```
+and then<br>
+```
+gunicorn --bind 0.0.0.0:8000 {main app name}.wsgi
 ```
 
 ### 16. Collect stactic files<hr>
@@ -150,6 +168,7 @@ python manage.py collectstatic
 ```
 deactivate
 ```
+🙋 NOTE: `cd` to [ubuntu@ip-172-31-37-35:~/myprojectdir$]
 
 ### 18. Creating systemd 'Socket File'<hr>
 ##### [ubuntu@ip-172-31-37-35:~/myprojectdir$]
@@ -170,6 +189,8 @@ ListenStream=/run/gunicorn.sock
 WantedBy=sockets.target
 ```
 
+🙋 NOTE: To save, `CTRL+X`, then `y` and hit `ENTER`
+
 ### 20. Creating systemd 'Service File'<hr>
 ```
 sudo nano /etc/systemd/system/gunicorn.service
@@ -186,8 +207,8 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/myprojectdir/{root folder name, e.g. notebook_django_backend}
-ExecStart=/home/ubuntu/myprojectdir/env-notebook/bin/gunicorn \
+WorkingDirectory=/home/ubuntu/myprojectdir/{project folder name, e.g. notebook_django_backend}
+ExecStart=/home/ubuntu/myprojectdir/{env name}/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
@@ -238,24 +259,24 @@ sudo systemctl status gunicorn
 
 ### 24. Configure nginx to proxy pass to gunicorn<hr>
 ```
-sudo nano /etc/nginx/sites-available/backend
+sudo nano /etc/nginx/sites-available/{any_file_name}
 ```
-👉 NOTE: I named it `backend`; it could be any name.
+
 
 #### Paste the following piece of configuration for ngnix
 ```
 server {
     listen 80;
-    server_name notebook-beta-backend.inteam.jp;
+    server_name {notebook-beta-backend.inteam.jp};
 
     location = /favicon.ico { access_log off; log_not_found off; }
 
     location /static/ {
-        alias /home/ubuntu/myprojectdir/notebook_django_backend/staticfiles/;
+        alias /home/ubuntu/myprojectdir/{project folder}/staticfiles/;
     }
 
     location /media/ {
-        alias /home/ubuntu/myprojectdir/notebook_django_backend/media/;
+        alias /home/ubuntu/myprojectdir/{project folder}/media/;
     }
 
 
@@ -337,3 +358,30 @@ when I hit anything URL with token, I am getting the following error
 
 #### Solution:
 Django is confusing between modules 'jwt' and PyJWT. To avoid this confusion uninstall both modules. Now, install jwt first and then install PyJWT.
+
+
+### 🔥 Gunicorn related error !<hr>
+
+#### Error:
+
+- gunicorn.socket: Failed with result 'service-start-limit-hit'.
+- ModuleNotFoundError: No module named 'xxx'
+
+#### Solution:
+Probably, it is something wrong in path specified by us 'gunicorn.service'file. Check below for the warning icon ⚠️ areas. In my case, I did not set the 'WorkingDirectory' correctly.
+```
+.....
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/myprojectdir/⚠️{project folder name, e.g. notebook_django_backend}
+ExecStart=/home/ubuntu/myprojectdir/{env name}/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          ⚠️ {main app name e.g. 'backend' which has wsgi file}.wsgi:application <--
+
+[Install]
+WantedBy=multi-user.target
+```
+
